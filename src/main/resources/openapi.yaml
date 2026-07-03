@@ -1,0 +1,412 @@
+openapi: 3.0.3
+info:
+  title: GitHub API Client
+  description: |
+    Cliente para consumir la API REST oficial de GitHub.
+    Trabajo práctico: análisis, documentación y consumo de endpoints.
+  version: 1.0.0
+  contact:
+    name: TDV - GitHub API TP
+
+servers:
+  - url: https://api.github.com
+    description: GitHub API production
+
+paths:
+  /user/repos:
+    get:
+      tags:
+        - Repositorios
+      summary: Listar repositorios del usuario autenticado
+      description: Obtiene los repositorios del usuario cuyo token Bearer se utilizó en la autenticación.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: per_page
+          in: query
+          description: Cantidad de repositorios por página
+          required: false
+          schema:
+            type: integer
+            default: 30
+        - name: page
+          in: query
+          description: Número de página
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: type
+          in: query
+          description: Tipo de repositorios a listar
+          required: false
+          schema:
+            type: string
+            enum:
+              - all
+              - owner
+              - public
+              - private
+              - member
+            default: all
+      responses:
+        "200":
+          description: Lista de repositorios del usuario
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Repository"
+        "401":
+          description: Token inválido o ausente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Límite de tasa excedido o sin permisos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    post:
+      tags:
+        - Repositorios
+      summary: Crear un nuevo repositorio
+      description: Crea un repositorio en la cuenta del usuario autenticado.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateRepoRequest"
+      responses:
+        "201":
+          description: Repositorio creado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Repository"
+        "401":
+          description: Token inválido o ausente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "422":
+          description: Datos inválidos (ej. nombre ya existe)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /repos/{owner}/{repo}/pulls:
+    post:
+      tags:
+        - Pull Requests
+      summary: Crear un Pull Request
+      description: Crea un Pull Request entre una rama nueva y main en el repositorio especificado.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: owner
+          in: path
+          description: Dueño del repositorio
+          required: true
+          schema:
+            type: string
+        - name: repo
+          in: path
+          description: Nombre del repositorio
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePullRequestRequest"
+      responses:
+        "201":
+          description: Pull Request creado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PullRequest"
+        "401":
+          description: Token inválido o ausente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "422":
+          description: Datos inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /repos/{owner}/{repo}/issues/{issue_number}/comments:
+    post:
+      tags:
+        - Comentarios
+      summary: Agregar comentario a un Pull Request
+      description: Agrega un comentario textual a un Pull Request existente. Los PRs son issues en GitHub, por lo que se usa el endpoint de comentarios de issues.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: owner
+          in: path
+          description: Dueño del repositorio
+          required: true
+          schema:
+            type: string
+        - name: repo
+          in: path
+          description: Nombre del repositorio
+          required: true
+          schema:
+            type: string
+        - name: issue_number
+          in: path
+          description: Número del Pull Request (issue)
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCommentRequest"
+      responses:
+        "201":
+          description: Comentario agregado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Comment"
+        "401":
+          description: Token inválido o ausente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: PR o repositorio no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: GitHub Token
+      description: Token personal de GitHub con los scopes necesarios (repo, public_repo).
+
+  schemas:
+    Repository:
+      type: object
+      description: Representación de un repositorio de GitHub
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+          example: mi-repositorio
+        full_name:
+          type: string
+          example: usuario/mi-repositorio
+        private:
+          type: boolean
+          description: Indica si el repositorio es privado
+        html_url:
+          type: string
+          format: uri
+          example: https://github.com/usuario/mi-repositorio
+        description:
+          type: string
+          nullable: true
+        fork:
+          type: boolean
+        language:
+          type: string
+          nullable: true
+        visibility:
+          type: string
+          enum:
+            - public
+            - private
+          example: public
+        default_branch:
+          type: string
+          example: main
+      required:
+        - id
+        - name
+        - full_name
+        - private
+        - html_url
+        - visibility
+
+    CreateRepoRequest:
+      type: object
+      description: Datos necesarios para crear un repositorio
+      properties:
+        name:
+          type: string
+          description: Nombre del repositorio
+          example: mi-nuevo-repo
+        description:
+          type: string
+          description: Descripción del repositorio
+          example: Repositorio creado desde la API
+        private:
+          type: boolean
+          description: true para privado, false para público
+          default: false
+        auto_init:
+          type: boolean
+          description: Inicializar con README
+          default: false
+      required:
+        - name
+
+    PullRequest:
+      type: object
+      description: Representación de un Pull Request de GitHub
+      properties:
+        id:
+          type: integer
+        number:
+          type: integer
+          description: Número del PR
+        title:
+          type: string
+          example: Mi PR
+        body:
+          type: string
+          nullable: true
+          example: Descripción del Pull Request
+        state:
+          type: string
+          enum:
+            - open
+            - closed
+            - merged
+        html_url:
+          type: string
+          format: uri
+          example: https://github.com/usuario/repo/pull/1
+        head:
+          type: object
+          properties:
+            ref:
+              type: string
+              example: feature-rama
+            sha:
+              type: string
+        base:
+          type: object
+          properties:
+            ref:
+              type: string
+              example: main
+            sha:
+              type: string
+        created_at:
+          type: string
+          format: date-time
+      required:
+        - id
+        - number
+        - title
+        - state
+        - html_url
+
+    CreatePullRequestRequest:
+      type: object
+      description: Datos necesarios para crear un Pull Request
+      properties:
+        title:
+          type: string
+          description: Título del Pull Request
+          example: Agregar nueva funcionalidad
+        body:
+          type: string
+          description: Descripción del Pull Request
+          example: Este PR agrega la funcionalidad de autenticación
+        head:
+          type: string
+          description: Nombre de la rama de origen
+          example: feature-nueva
+        base:
+          type: string
+          description: Nombre de la rama de destino
+          example: main
+      required:
+        - title
+        - head
+        - base
+
+    Comment:
+      type: object
+      description: Representación de un comentario en un issue/PR
+      properties:
+        id:
+          type: integer
+        body:
+          type: string
+          example: Este es un comentario de prueba
+        user:
+          type: object
+          properties:
+            login:
+              type: string
+            id:
+              type: integer
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required:
+        - id
+        - body
+        - user
+
+    CreateCommentRequest:
+      type: object
+      description: Datos necesarios para crear un comentario en un Pull Request
+      properties:
+        body:
+          type: string
+          description: Contenido del comentario
+          example: Revisé el código y funciona correctamente.
+      required:
+        - body
+
+    Error:
+      type: object
+      description: Respuesta de error de la API
+      properties:
+        message:
+          type: string
+          description: Mensaje descriptivo del error
+        documentation_url:
+          type: string
+          format: uri
+          description: URL de documentación del error
+        status:
+          type: string
+      required:
+        - message
