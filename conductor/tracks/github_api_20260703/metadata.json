@@ -1,0 +1,8 @@
+{
+  "track_id": "github_api_20260703",
+  "type": "feature",
+  "status": "in_progress",
+  "created_at": "2026-07-03T00:00:00Z",
+  "updated_at": "2026-07-03T00:00:00Z",
+  "description": "Implementar el módulo de autenticación Bearer y consumo de la API de GitHub con endpoints para listar repositorios, crear repositorios, crear PRs y comentar PRs, documentado con OpenAPI 3.0 y servido via SwaggerUI en Spring Boot."
+}
