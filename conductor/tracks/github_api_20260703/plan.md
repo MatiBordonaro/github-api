@@ -1,41 +1,41 @@
 # Plan: github_api_20260703
 
 ## Fase 1: Scaffolding
-- [ ] Inicializar proyecto Spring Boot con Maven
-- [ ] Crear estructura de paquetes (controller, service, model, dto, config)
-- [ ] Agregar dependencias en pom.xml
-- [ ] Configurar application.properties
-- [ ] Crear landing page de bienvenida
+- [x] Inicializar proyecto Spring Boot con Maven
+- [x] Crear estructura de paquetes (controller, service, model, dto, config)
+- [x] Agregar dependencias en pom.xml
+- [x] Configurar application.properties
+- [x] Crear landing page de bienvenida
 
 ## Fase 2: OpenAPI Spec
-- [ ] Crear documento openapi.yaml con todos los endpoints
-- [ ] Definir schemas de request/response
-- [ ] Definir esquema de autenticación Bearer
+- [x] Crear documento openapi.yaml con todos los endpoints
+- [x] Definir schemas de request/response
+- [x] Definir esquema de autenticación Bearer
 
 ## Fase 3: Cliente GitHub
-- [ ] Implementar GitHubService interface y su implementación
-- [ ] Implementar endpoint GET /user/repos (listar repos)
-- [ ] Implementar endpoint POST /user/repos (crear repo)
-- [ ] Implementar endpoint POST /repos/{owner}/{repo}/pulls (crear PR)
-- [ ] Implementar endpoint POST /repos/{owner}/{repo}/issues/{number}/comments (comentar PR)
-- [ ] Configurar RestClient con Bearer Token
+- [x] Implementar GitHubService interface y su implementación
+- [x] Implementar endpoint GET /user/repos (listar repos)
+- [x] Implementar endpoint POST /user/repos (crear repo)
+- [x] Implementar endpoint POST /repos/{owner}/{repo}/pulls (crear PR)
+- [x] Implementar endpoint POST /repos/{owner}/{repo}/issues/{number}/comments (comentar PR)
+- [x] Configurar RestClient con Bearer Token
 
 ## Fase 4: Controllers REST
-- [ ] Implementar RepoController (listar y crear repos)
-- [ ] Implementar PullRequestController (crear PR)
-- [ ] Implementar CommentController (comentar PR)
-- [ ] Agregar @RestControllerAdvice para manejo de errores
+- [x] Implementar RepoController (listar y crear repos)
+- [x] Implementar PullRequestController (crear PR)
+- [x] Implementar CommentController (comentar PR)
+- [x] Agregar @RestControllerAdvice para manejo de errores
 
 ## Fase 5: SwaggerUI
-- [ ] Integrar springdoc-openapi
-- [ ] Configurar SwaggerUI para usar la spec
-- [ ] Verificar que los endpoints sean invocables desde SwaggerUI
+- [x] Integrar springdoc-openapi
+- [x] Configurar SwaggerUI para usar la spec
+- [x] Verificar que los endpoints sean invocables desde SwaggerUI
 
 ## Fase 6: Selenium Tests
-- [ ] Configurar Selenium WebDriver
-- [ ] Test: verificar que SwaggerUI carga y el esquema de auth está presente
-- [ ] Test: probar GET /user/repos desde SwaggerUI
-- [ ] Test: probar POST /user/repos desde SwaggerUI
+- [x] Configurar Selenium WebDriver
+- [x] Test: verificar que SwaggerUI carga y el esquema de auth está presente
+- [x] Test: probar GET /api/repos desde SwaggerUI
+- [x] Test: probar POST /api/repos desde SwaggerUI
 
 ## Fase 7: Tests Unitarios
 - [ ] Test: GitHubService listar repos
