@@ -9,6 +9,5 @@ public record RepositoryDto(
     @JsonProperty("private") boolean isPrivate,
     @JsonProperty("html_url") String htmlUrl,
     String description,
-    String visibility,
-    @JsonProperty("default_branch") String defaultBranch
+    String visibility
 ) {}

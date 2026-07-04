@@ -17,9 +17,13 @@ import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
+import org.springframework.web.client.RestClient;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {"GITHUB_TOKEN=dummy"})
 class SwaggerUISeleniumTest {
 
     @LocalServerPort
@@ -53,7 +57,7 @@ class SwaggerUISeleniumTest {
 
         boolean hasAuthorize = !driver.findElements(
             By.cssSelector(".authorize, .auth-wrapper button, .btn.authorize")).isEmpty();
-        assertTrue(hasAuthorize, "SwaggerUI debería mostrar el botón Authorize");
+        assertTrue(hasAuthorize, "SwaggerUI deberia mostrar el boton Authorize");
     }
 
     @Test
@@ -64,7 +68,7 @@ class SwaggerUISeleniumTest {
             By.cssSelector(".opblock-tag-section, .opblock")));
 
         List<WebElement> tags = driver.findElements(By.cssSelector(".opblock-tag-section"));
-        assertTrue(tags.size() >= 0, "SwaggerUI debería renderizar bloques de endpoints");
+        assertTrue(tags.size() >= 0);
     }
 
     @Test
@@ -74,4 +78,6 @@ class SwaggerUISeleniumTest {
         String body = driver.findElement(By.tagName("body")).getText();
         assertTrue(body.contains("api/repos") || body.contains("listRepositories"));
     }
+
+
 }

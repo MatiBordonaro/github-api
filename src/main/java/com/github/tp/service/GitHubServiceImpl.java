@@ -10,7 +10,6 @@ import com.github.tp.dto.CommentDto;
 import com.github.tp.dto.CreateCommentRequest;
 import com.github.tp.dto.CreatePullRequestRequest;
 import com.github.tp.dto.CreateRepoRequest;
-import com.github.tp.dto.GitHubErrorResponse;
 import com.github.tp.dto.PullRequestDto;
 import com.github.tp.dto.RepositoryDto;
 import com.github.tp.model.GitHubApiException;

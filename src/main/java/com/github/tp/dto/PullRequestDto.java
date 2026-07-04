@@ -9,12 +9,5 @@ public record PullRequestDto(
     String body,
     String state,
     @JsonProperty("html_url") String htmlUrl,
-    @JsonProperty("created_at") String createdAt,
-    GitRef head,
-    GitRef base
-) {
-    public record GitRef(
-        String ref,
-        String sha
-    ) {}
-}
+    @JsonProperty("created_at") String createdAt
+) {}

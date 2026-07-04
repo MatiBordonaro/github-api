@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,9 +37,6 @@ class GitHubServiceImplTest {
     private RestClient.RequestBodySpec requestBodySpec;
 
     @Mock
-    private RestClient.RequestHeadersSpec requestHeadersSpec;
-
-    @Mock
     private RestClient.ResponseSpec responseSpec;
 
     private GitHubServiceImpl service;
@@ -50,9 +49,9 @@ class GitHubServiceImplTest {
     @Test
     void listRepositoriesDeberiaRetornarListaDeRepos() {
         RepositoryDto repo1 = new RepositoryDto(1, "repo1", "user/repo1", false,
-            "https://github.com/user/repo1", "desc", "public", "main");
+            "https://github.com/user/repo1", "desc", "public");
         RepositoryDto repo2 = new RepositoryDto(2, "repo2", "user/repo2", true,
-            "https://github.com/user/repo2", null, "private", "main");
+            "https://github.com/user/repo2", null, "private");
         RepositoryDto[] reposArray = {repo1, repo2};
 
         doReturn(getUriSpec).when(restClient).get();
@@ -61,7 +60,7 @@ class GitHubServiceImplTest {
         doReturn(responseSpec).when(responseSpec).onStatus(any(), any());
         doReturn(reposArray).when(responseSpec).body(RepositoryDto[].class);
 
-        var result = service.listRepositories();
+        List<RepositoryDto> result = service.listRepositories();
 
         assertEquals(2, result.size());
         assertEquals("repo1", result.get(0).name());
@@ -71,7 +70,7 @@ class GitHubServiceImplTest {
     void createRepositoryDeberiaRetornarRepoCreado() {
         CreateRepoRequest request = new CreateRepoRequest("nuevo-repo", "desc", false);
         RepositoryDto expected = new RepositoryDto(3, "nuevo-repo", "user/nuevo-repo", false,
-            "https://github.com/user/nuevo-repo", "desc", "public", "main");
+            "https://github.com/user/nuevo-repo", "desc", "public");
 
         doReturn(postUriSpec).when(restClient).post();
         doReturn(requestBodySpec).when(postUriSpec).uri("/user/repos");
@@ -80,7 +79,7 @@ class GitHubServiceImplTest {
         doReturn(responseSpec).when(responseSpec).onStatus(any(), any());
         doReturn(expected).when(responseSpec).body(RepositoryDto.class);
 
-        var result = service.createRepository(request);
+        RepositoryDto result = service.createRepository(request);
 
         assertNotNull(result);
         assertEquals("nuevo-repo", result.name());
@@ -92,7 +91,7 @@ class GitHubServiceImplTest {
             "Mi PR", "Descripción", "feature-branch", "main");
         PullRequestDto expected = new PullRequestDto(
             1, 42, "Mi PR", "Descripción", "open",
-            "https://github.com/user/repo/pull/42", null, null, null);
+            "https://github.com/user/repo/pull/42", null);
 
         doReturn(postUriSpec).when(restClient).post();
         doReturn(requestBodySpec).when(postUriSpec).uri(
@@ -102,7 +101,7 @@ class GitHubServiceImplTest {
         doReturn(responseSpec).when(responseSpec).onStatus(any(), any());
         doReturn(expected).when(responseSpec).body(PullRequestDto.class);
 
-        var result = service.createPullRequest("user", "repo", request);
+        PullRequestDto result = service.createPullRequest("user", "repo", request);
 
         assertNotNull(result);
         assertEquals("Mi PR", result.title());
@@ -112,7 +111,7 @@ class GitHubServiceImplTest {
     @Test
     void createCommentDeberiaRetornarComentarioCreado() {
         CreateCommentRequest request = new CreateCommentRequest("Revisado OK");
-        CommentDto expected = new CommentDto(1, "Revisado OK", null, null, null);
+        CommentDto expected = new CommentDto(1, "Revisado OK", null, null);
 
         doReturn(postUriSpec).when(restClient).post();
         doReturn(requestBodySpec).when(postUriSpec).uri(
@@ -123,7 +122,7 @@ class GitHubServiceImplTest {
         doReturn(responseSpec).when(responseSpec).onStatus(any(), any());
         doReturn(expected).when(responseSpec).body(CommentDto.class);
 
-        var result = service.createComment("user", "repo", 5, request);
+        CommentDto result = service.createComment("user", "repo", 5, request);
 
         assertNotNull(result);
         assertEquals("Revisado OK", result.body());
