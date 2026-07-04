@@ -38,8 +38,8 @@
 - [x] Test: probar POST /api/repos desde SwaggerUI
 
 ## Fase 7: Tests Unitarios
-- [ ] Test: GitHubService listar repos
-- [ ] Test: GitHubService crear repo
-- [ ] Test: GitHubService crear PR
-- [ ] Test: GitHubService comentar PR
-- [ ] Test: manejo de errores y excepciones
+- [x] Test: GitHubService listar repos
+- [x] Test: GitHubService crear repo
+- [x] Test: GitHubService crear PR
+- [x] Test: GitHubService comentar PR
+- [x] Test: manejo de errores y excepciones
